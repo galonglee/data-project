@@ -1,0 +1,22 @@
+# 忽略 Python 相關
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 忽略環境文件
+.env
+*.env
+config.ini
+
+# 忽略輸出和日誌
+output/
+logs/
+*.log
+
+# 忽略系統文件
+.DS_Store
+Thumbs.db
+
+# 忽略暫存文件
+*.tmp
+*.temp
