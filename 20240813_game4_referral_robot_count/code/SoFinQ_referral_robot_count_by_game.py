@@ -12,25 +12,25 @@ from dotenv import load_dotenv
 today1 = dt.today().strftime('%Y%m%d')  # Format today's date as YYYYMMDD
 today = dt.today()  # Get today's date as a datetime object
 
-# Define file paths
-output_path = 'C:/Users/User/Insync/Drivers/Google Drive/黑森科技/數據專案/20240813_game4_referral_robot_count/output/'
-logs_path = 'C:/Users/User/Insync/Drivers/Google Drive/黑森科技/數據專案/20240813_game4_referral_robot_count/logs/'
+# Define file paths using relative paths
+output_path = os.path.join('output')
+logs_path = os.path.join('logs')
 
 # Create necessary directories
 if not os.path.exists(output_path):
     os.makedirs(output_path)
-if not os.path.exists('logs'):
-    os.makedirs('logs')
+if not os.path.exists(logs_path):
+    os.makedirs(logs_path)
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv('SoFinQ_referral_robot_count_by_game.env')
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(f'logs/robot_count_{dt.now().strftime("%Y%m%d")}.log'),
+        logging.FileHandler(os.path.join(logs_path, f'robot_count_{dt.now().strftime("%Y%m%d")}.log')),
         logging.StreamHandler()
     ]
 )
@@ -335,7 +335,7 @@ parent_id = os.getenv('ZOHO_PARENT_FOLDER_ID')
 # Create and upload Excel file for all referrers if data exists
 if not refer.empty:
     try:
-        all_referrers_file = f'{output_path}SoFinQ_all_referrers_IV_KYC_games_{today1}.xlsx'
+        all_referrers_file = os.path.join(output_path, f'SoFinQ_all_referrers_IV_KYC_games_{today1}.xlsx')
         with pd.ExcelWriter(all_referrers_file, engine='openpyxl') as writer:
             for competition_name in competition_name_list:
                 sheet_name = competition_name[:31]
@@ -361,7 +361,7 @@ competition_name_list_last_report_date = cp[(cp['report_end_date1'] == today_dat
 if competition_name_list_last_report_date:
     try:
         refer_last_report_date = refer[refer['competition_title'].isin(competition_name_list_last_report_date)]
-        final_report_file = f'{output_path}final_report_{today1}.xlsx'
+        final_report_file = os.path.join(output_path, f'final_report_{today1}.xlsx')
         
         logging.info(f"Creating final reports for {len(competition_name_list_last_report_date)} competitions")
         
@@ -383,7 +383,7 @@ if competition_name_list_last_report_date:
         for competition_name in competition_name_list_last_report_date:
             try:
                 title_name = competition_name[:31]
-                individual_final_file = f'{output_path}{title_name}_final.xlsx'
+                individual_final_file = os.path.join(output_path, f'{title_name}_final.xlsx')
                 
                 competition_data = refer_last_report_date[refer_last_report_date['competition_title'] == competition_name]
                 competition_data.to_excel(individual_final_file, sheet_name=title_name, index=False)
